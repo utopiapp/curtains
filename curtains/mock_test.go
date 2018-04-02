@@ -86,3 +86,22 @@ func TestMockMoveToPosition(t *testing.T) {
 	c.Shutdown()
 	<-errC
 }
+
+func TestQuery(t *testing.T) {
+	t.Parallel()
+	c := NewMockCurtain()
+	errC := c.Init()
+	c.Query()
+
+	seenPositions, err := waitForPosition(t, c, 0, time.Second)
+	assert.NoError(t, err)
+
+	seenStates, err := waitForState(t, c, CurtainStateStopped, time.Second)
+	assert.NoError(t, err)
+
+	assert.Equal(t, []int{0}, seenPositions)
+	assert.Equal(t, []CurtainState{CurtainStateStopped}, seenStates)
+
+	c.Shutdown()
+	<-errC
+}

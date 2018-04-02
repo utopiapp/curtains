@@ -66,7 +66,8 @@ func (c *mockCurtain) SetTargetPosition(p int) {
 }
 
 func (c *mockCurtain) Query() {
-	return
+	c.informState(c.state)
+	c.informPos(c.currentPos)
 }
 
 func (c *mockCurtain) Position() <-chan int {
@@ -88,6 +89,10 @@ func (c *mockCurtain) updateState(v CurtainState) {
 		return
 	}
 	c.state = v
+	c.informState(v)
+}
+
+func (c *mockCurtain) informState(v CurtainState) {
 	go func() {
 		select {
 		case c.stateC <- v:
@@ -101,6 +106,10 @@ func (c *mockCurtain) updatePos(v int) {
 		return
 	}
 	c.currentPos = v
+	c.informPos(v)
+}
+
+func (c *mockCurtain) informPos(v int) {
 	go func() {
 		select {
 		case c.posC <- v:

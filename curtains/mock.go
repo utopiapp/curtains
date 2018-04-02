@@ -15,7 +15,6 @@ type mockCurtain struct {
 	stateC          chan CurtainState
 	requestExitChan chan struct{}
 	confirmExitChan chan error
-	shutdown        bool
 	m               *sync.Mutex
 }
 
@@ -48,7 +47,6 @@ func (c *mockCurtain) Init() <-chan error {
 				c.m.Lock()
 				defer c.m.Unlock()
 				ticker.Stop()
-				c.shutdown = true
 				defer close(c.confirmExitChan)
 				defer close(c.posC)
 				defer close(c.stateC)
